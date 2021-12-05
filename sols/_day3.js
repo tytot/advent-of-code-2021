@@ -3,6 +3,7 @@ const reader = require('../reader')
 reader.getInput('inputs/_input3.txt').then((input) => {
     input = input.map((value) => value.split('').map((bit) => parseInt(bit)))
     const numBits = input[0].length
+    const ascendingBits = [...Array(numBits).keys()]
     const frequencies = input.reduce((acc, curr) => {
         curr.forEach((bit, i) => {
             acc[i] += bit
@@ -17,7 +18,7 @@ reader.getInput('inputs/_input3.txt').then((input) => {
     const infrequencies = frequencies.slice()
     let o2Filter = input
     let cO2Filter = input
-    for (let i = 0; i < numBits; i++) {
+    ascendingBits.some((i) => {
         const desired = frequencies[i] >= o2Filter.length / 2
         o2Filter = o2Filter.filter((value) => {
             if (value[i] == desired) {
@@ -28,10 +29,10 @@ reader.getInput('inputs/_input3.txt').then((input) => {
             })
             return false
         })
-        if (o2Filter.length === 1) break
-    }
+        return o2Filter.length === 1
+    })
     const o2 = parseInt(o2Filter[0].join(''), 2)
-    for (let i = 0; i < numBits; i++) {
+    ascendingBits.some((i) => {
         const desired = infrequencies[i] < cO2Filter.length / 2
         cO2Filter = cO2Filter.filter((value) => {
             if (value[i] == desired) {
@@ -42,8 +43,8 @@ reader.getInput('inputs/_input3.txt').then((input) => {
             })
             return false
         })
-        if (cO2Filter.length === 1) break
-    }
+        return cO2Filter.length === 1
+    })
     const cO2 = parseInt(cO2Filter[0].join(''), 2)
     console.log(`Part 2: ${o2 * cO2}`)
 })
