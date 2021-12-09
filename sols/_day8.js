@@ -18,6 +18,7 @@ reader.getInput('inputs/_input8.txt').then((input) => {
     const difference = (master, ...patterns) =>
         diffPatterns([master, ...patterns], (current, segment) => !current.includes(segment))
 
+    // segment positions -> digit
     const renderMap = new Map(
         ['012456', '25', '02346', '02356', '1235', '01356', '013456', '025', '0123456', '012356'].map((key, i) => [
             key,
@@ -26,10 +27,12 @@ reader.getInput('inputs/_input8.txt').then((input) => {
     )
     const part2 = entries.reduce((acc, entry) => {
         const [signalPatterns, output] = entry
+        // pattern length -> array of patterns
         const lengthMap = Array.from({ length: 8 }, () => [])
         signalPatterns.forEach((pattern) => {
             lengthMap[pattern.length].push(pattern)
         })
+        // segment position -> segment letter
         const segmentOrder = Array(7)
         const horizontals = intersection(...lengthMap[5])
         segmentOrder[0] = difference(lengthMap[3][0], lengthMap[2][0])
@@ -42,6 +45,7 @@ reader.getInput('inputs/_input8.txt').then((input) => {
         )
         segmentOrder[5] = difference(lengthMap[2][0], segmentOrder[2])
         segmentOrder[4] = difference(lengthMap[7][0], ...segmentOrder.filter((segment) => segment))
+        // segment letter -> segment position
         const segmentMap = new Map(segmentOrder.map((segment, i) => [segment, i]))
         const outputValue = output.reduce((value, digit) => value + renderMap.get(
             digit.split('').map((segment) => segmentMap.get(segment)).sort((a, b) => a - b).join('')
